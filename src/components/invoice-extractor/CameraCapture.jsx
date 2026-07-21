@@ -52,7 +52,7 @@ export default function CameraCapture({ onCapture, onClose }) {
     <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2 text-foreground">
-          <Camera className="h-5 w-5 text-accent" aria-hidden="true" />
+          <Camera className="h-5 w-5 text-accent-ink" aria-hidden="true" />
           <h3 className="font-display text-lg">Take a photo</h3>
         </div>
         <button

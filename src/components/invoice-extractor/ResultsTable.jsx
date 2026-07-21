@@ -12,7 +12,7 @@ const ADDR = {
   verified: { label: "Verified", icon: ShieldCheck, cls: "text-verified" },
   check: { label: "Check", icon: ShieldAlert, cls: "text-review" },
   "not checked": { label: "Not checked", icon: HelpCircle, cls: "text-muted-foreground" },
-  "": { label: "—", icon: Ban, cls: "text-muted-foreground/50" },
+  "": { label: "—", icon: Ban, cls: "text-muted-foreground" },
 };
 
 const HEADERS = [

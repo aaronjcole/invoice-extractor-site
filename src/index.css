@@ -4,27 +4,28 @@
 
 @layer base {
   :root {
-    --background: 39 33% 96%;
-    --foreground: 30 12% 12%;
+    --background: 40 33% 96%;
+    --foreground: 20 14% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 30 12% 12%;
+    --card-foreground: 20 14% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 30 12% 12%;
-    --primary: 28 45% 16%;
-    --primary-foreground: 39 40% 95%;
-    --secondary: 36 23% 90%;
-    --secondary-foreground: 30 15% 18%;
-    --muted: 36 18% 92%;
-    --muted-foreground: 30 8% 38%;
-    --accent: 29 74% 42%;
-    --accent-foreground: 39 60% 97%;
-    --destructive: 2 68% 42%;
+    --popover-foreground: 20 14% 12%;
+    --primary: 20 14% 12%;
+    --primary-foreground: 40 33% 96%;
+    --secondary: 36 20% 90%;
+    --secondary-foreground: 20 14% 18%;
+    --muted: 36 16% 92%;
+    --muted-foreground: 24 8% 40%;
+    --accent: 9 78% 47%;
+    --accent-foreground: 20 14% 12%;
+    --accent-ink: 9 72% 38%;
+    --destructive: 2 70% 38%;
     --destructive-foreground: 0 0% 98%;
-    --border: 34 17% 84%;
-    --input: 34 17% 80%;
-    --ring: 29 74% 38%;
-    --verified: 140 28% 34%;
-    --review: 32 88% 48%;
+    --border: 28 12% 52%;
+    --input: 28 16% 46%;
+    --ring: 9 72% 40%;
+    --verified: 151 55% 26%;
+    --review: 32 90% 30%;
     --radius: 0.625rem;
     --font-heading: "Fraunces", ui-serif, Georgia, serif;
     --font-body: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -52,7 +53,7 @@
     @apply bg-background text-foreground font-body antialiased;
   }
   ::selection {
-    background: hsl(29 74% 42% / 0.22);
+    background: hsl(9 78% 47% / 0.22);
   }
 }
 

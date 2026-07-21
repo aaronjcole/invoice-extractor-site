@@ -74,12 +74,12 @@ export default function UploadZone({ onFiles, disabled }) {
           dragging ? "border-accent bg-accent/10" : "border-border hover:border-accent/60 hover:bg-secondary/40"
         } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
       >
-        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-accent ring-1 ring-border">
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-accent-ink ring-1 ring-border">
           <Upload className="h-6 w-6" aria-hidden="true" />
         </span>
         <div>
           <p className="font-display text-xl text-foreground">
-            Drop invoices here, or <span className="text-accent underline-offset-4 group-hover:underline">browse</span>
+            Drop invoices here, or <span className="text-accent-ink underline-offset-4 group-hover:underline">browse</span>
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
             Multiple files · JPG, PNG, WEBP up to 10 MB · PDF up to 20 MB

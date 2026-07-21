@@ -2,7 +2,7 @@ import { FileText, Image as ImageIcon, Trash2, Loader2, Check, AlertTriangle, Cl
 
 const STATUS = {
   pending: { label: "Pending", icon: Clock, cls: "text-muted-foreground bg-secondary" },
-  running: { label: "Processing", icon: Loader2, cls: "text-accent bg-accent/10", spin: true },
+  running: { label: "Processing", icon: Loader2, cls: "text-accent-ink bg-accent/10", spin: true },
   done: { label: "Done", icon: Check, cls: "text-verified bg-verified/10" },
   error: { label: "Error", icon: AlertTriangle, cls: "text-destructive bg-destructive/10" },
 };
