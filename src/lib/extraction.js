@@ -3,7 +3,7 @@ import { EXTRACTION_PROMPT, RESPONSE_SCHEMA, CONTACT_FIELDS } from "./extraction
 
 // Vision-capable Claude. Non-default model (uses more credits) — required for
 // reliable typed/handwritten invoice reading per product spec.
-const VISION_MODEL = "claude_sonnet_4_6";
+const VISION_MODEL = "gemini_3_flash";
 
 function looksLikeResult(o) {
   return (
