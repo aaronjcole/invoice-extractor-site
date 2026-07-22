@@ -96,3 +96,17 @@
   background-size: 200% 100%;
   animation: shimmer 1.4s linear infinite;
 }
+
+@keyframes scanline {
+  0%   { top: -18%; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+.scanline {
+  animation: scanline 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: top;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scanline { animation: none; opacity: 0; }
+}

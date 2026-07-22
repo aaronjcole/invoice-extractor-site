@@ -341,7 +341,15 @@ function Hero() {
 function InvoiceMockup() {
   return (
     <div className="relative mx-auto w-full max-w-sm" aria-hidden="true">
-      <div className="rounded-2xl border border-border bg-card p-5 shadow-[0_24px_60px_-24px_rgba(60,30,10,0.4)]">
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-[0_24px_60px_-24px_rgba(60,30,10,0.4)]">
+        <div
+          className="scanline pointer-events-none absolute inset-x-0 z-10 h-14 -translate-y-1/2"
+          style={{
+            background:
+              "linear-gradient(to bottom, transparent, hsl(var(--accent) / 0.14) 42%, hsl(var(--accent) / 0.85) 50%, hsl(var(--accent) / 0.14) 58%, transparent)",
+          }}
+          aria-hidden="true"
+        />
         <div className="flex items-center justify-between">
           <div className="h-6 w-16 rounded-md bg-primary/80" />
           <span className="h-2.5 w-2.5 rounded-full bg-accent/70" />
