@@ -5,62 +5,65 @@ import { EXTRACTION_PROMPT, RESPONSE_SCHEMA, CONTACT_FIELDS } from "./extraction
 // reliable typed/handwritten invoice reading per product spec.
 const VISION_MODEL = "claude_sonnet_4_6";
 
-/**
- * Extract JSON from an LLM response that may be a parsed object, a JSON string,
- * or a string wrapped in markdown code fences. This is the reliability seam.
- */
-export function parseExtractionResult(raw) {
-  if (raw == null) throw new Error("Empty response from model.");
-
-  // Already parsed to an object (platform returns dict when schema provided).
-  if (typeof raw === "object") return raw;
-
-  if (typeof raw !== "string") throw new Error("Unexpected response type.");
-
-  let text = raw.trim();
-
-  // Strip markdown code fences if present.
-  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  if (fence) text = fence[1].trim();
-
-  // Try direct parse.
-  try {
-    return JSON.parse(text);
-  } catch {
-    // Fall back to outermost {...} block.
-    const start = text.indexOf("{");
-    const end = text.lastIndexOf("}");
-    if (start !== -1 && end !== -1 && end > start) {
-      return JSON.parse(text.slice(start, end + 1));
-    }
-    throw new Error("Could not locate JSON object in response.");
-  }
+function looksLikeResult(o) {
+  return (
+    o && typeof o === "object" && !Array.isArray(o) &&
+    ("confidence" in o || "display_name" in o || "fields_to_verify" in o)
+  );
 }
 
-/**
- * Validate the parsed object against the output contract.
- * Throws on missing required keys or invalid confidence.
- */
-export function validateExtraction(obj) {
-  if (!obj || typeof obj !== "object") throw new Error("Result is not an object.");
-  const missing = [];
-  for (const k of [...CONTACT_FIELDS, "confidence", "fields_to_verify"]) {
-    if (!(k in obj)) missing.push(k);
-  }
-  if (missing.length) throw new Error(`Missing keys: ${missing.join(", ")}`);
-  if (!["high", "medium", "low"].includes(obj.confidence)) {
-    throw new Error("confidence must be high, medium, or low.");
-  }
-  if (!Array.isArray(obj.fields_to_verify)) {
-    throw new Error("fields_to_verify must be an array.");
-  }
-  // Coerce nulls and strings.
-  for (const k of CONTACT_FIELDS) {
-    if (obj[k] !== null && typeof obj[k] !== "string") {
-      obj[k] = obj[k] == null ? null : String(obj[k]);
+// Unwrap envelopes / nesting: find the first object that looks like the extraction result.
+function findResultObject(node, depth = 0) {
+  if (looksLikeResult(node)) return node;
+  if (node && typeof node === "object" && depth < 4) {
+    for (const v of Object.values(node)) {
+      const found = findResultObject(v, depth + 1);
+      if (found) return found;
     }
   }
-  return obj;
+  return null;
+}
+
+export function parseExtractionResult(raw) {
+  if (raw == null) throw new Error("Empty response from model.");
+  let candidate = raw;
+  if (typeof raw === "string") {
+    let text = raw.trim();
+    const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fence) text = fence[1].trim();
+    try {
+      candidate = JSON.parse(text);
+    } catch {
+      const start = text.indexOf("{");
+      const end = text.lastIndexOf("}");
+      if (start !== -1 && end !== -1 && end > start) {
+        candidate = JSON.parse(text.slice(start, end + 1));
+      } else {
+        throw new Error("Could not locate JSON object in response.");
+      }
+    }
+  }
+  const found = findResultObject(candidate);
+  if (!found) {
+    const snippet = (typeof raw === "string" ? raw : JSON.stringify(raw)).slice(0, 240);
+    throw new Error(`Unrecognized response shape: ${snippet}`);
+  }
+  return found;
+}
+
+export function validateExtraction(obj) {
+  if (!obj || typeof obj !== "object") throw new Error("Result is not an object.");
+  const out = {};
+  for (const k of CONTACT_FIELDS) {
+    out[k] = obj[k] == null ? null : (typeof obj[k] === "string" ? obj[k] : String(obj[k]));
+  }
+  // Lenient on the universal-key path: default to "low" (which flags the row for review)
+  // rather than throwing, so a slightly-off response still yields a usable row.
+  out.confidence = ["high", "medium", "low"].includes(obj.confidence) ? obj.confidence : "low";
+  out.fields_to_verify = Array.isArray(obj.fields_to_verify)
+    ? obj.fields_to_verify.filter((f) => typeof f === "string")
+    : [];
+  return out;
 }
 
 /**
