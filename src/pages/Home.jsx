@@ -133,6 +133,7 @@ export default function Home() {
       <Header />
       <Hero />
       <FeatureRow />
+      <HowItWorks />
 
       <main id="tool" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-24">
         {/* Step 1: add files */}
@@ -254,7 +255,6 @@ export default function Home() {
 
       </main>
 
-      <HowItWorks />
       <Footer />
 
       {toast && (
