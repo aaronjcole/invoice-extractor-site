@@ -328,7 +328,7 @@ function Hero() {
             >
               Start extracting <span aria-hidden="true">→</span>
             </a>
-            <span className="text-sm text-muted-foreground">No sign-up. No API key.</span>
+            <span className="text-sm text-muted-foreground">No sign-up.</span>
           </div>
         </div>
 

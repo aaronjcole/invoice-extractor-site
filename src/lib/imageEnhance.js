@@ -2,7 +2,7 @@
 // Blanket enhancement degrades clean/color-coded/light-pencil inputs, so apply
 // only where it helps. PDFs are NEVER canvas-processed.
 
-const MAX_LONG_EDGE = 1600;
+const MAX_LONG_EDGE = 1400;
 const LOW_DPI_THRESHOLD = 1400;
 
 function loadImage(file) {
