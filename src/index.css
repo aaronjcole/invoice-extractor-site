@@ -16,13 +16,13 @@
     --secondary-foreground: 20 14% 18%;
     --muted: 36 16% 92%;
     --muted-foreground: 24 8% 40%;
-    --accent: 9 78% 47%;
-    --accent-foreground: 20 14% 12%;
+    --accent: 9 72% 41%;
+    --accent-foreground: 0 0% 99%;
     --accent-ink: 9 72% 38%;
     --destructive: 2 70% 38%;
     --destructive-foreground: 0 0% 98%;
-    --border: 28 12% 52%;
-    --input: 28 16% 46%;
+    --border: 28 14% 82%;
+    --input: 28 14% 52%;
     --ring: 9 72% 40%;
     --verified: 151 55% 26%;
     --review: 32 90% 30%;

@@ -432,6 +432,7 @@ function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-muted-foreground">
         <p>Invoice Extractor — customer contacts from invoices, extracted with vision AI.</p>
         <p className="mt-1 text-xs">Invoices are uploaded only to read them, and extracted results stay in this browser until you clear them. Nothing is shared with third parties.</p>
+        <p className="mt-1 text-xs">Address checks © OpenStreetMap contributors.</p>
       </div>
     </footer>
   );
