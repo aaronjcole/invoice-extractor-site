@@ -360,7 +360,7 @@ function Hero() {
             >
               Start extracting <span aria-hidden="true">→</span>
             </a>
-            <span className="text-sm text-muted-foreground">No sign-up.</span>
+            <span className="text-sm text-muted-foreground">Free to try.</span>
           </div>
         </div>
 
