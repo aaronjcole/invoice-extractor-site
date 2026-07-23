@@ -10,6 +10,8 @@ import Queue from "@/components/invoice-extractor/Queue";
 import ResultsTable from "@/components/invoice-extractor/ResultsTable";
 import CameraCapture from "@/components/invoice-extractor/CameraCapture";
 import ProfileMenu from "@/components/invoice-extractor/ProfileMenu";
+import ThemeToggle from "@/components/ThemeToggle";
+import PullToRefresh from "@/components/invoice-extractor/PullToRefresh";
 import { enhanceImage } from "@/lib/imageEnhance";
 import { extractFromFile } from "@/lib/extraction";
 import { verifyAddress, resetVerifier } from "@/lib/addressVerify";
@@ -84,6 +86,14 @@ export default function Home() {
     localStorage.removeItem(STORAGE_KEY);
   };
 
+  const refreshResults = async () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      setResults(saved ? JSON.parse(saved) : []);
+    } catch {}
+    await new Promise((r) => setTimeout(r, 600));
+  };
+
   const pendingCount = useMemo(() => queue.filter((i) => i.status === "pending").length, [queue]);
   const reviewCount = useMemo(() => results.filter(needsReview).length, [results]);
 
@@ -153,7 +163,7 @@ export default function Home() {
       <FeatureRow />
       <HowItWorks />
 
-      <main id="tool" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-24">
+      <main id="tool" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-28 md:pb-24">
         {/* Step 1: add files */}
         <section aria-labelledby="step-add" className="mb-8">
           <SectionStep n={1} title="Add invoices" id="step-add" />
@@ -230,7 +240,9 @@ export default function Home() {
                 <span>{reviewCount} row{reviewCount === 1 ? "" : "s"} need human review. Flagged cells are highlighted.</span>
               </div>
             )}
-            <ResultsTable rows={results} onRemove={removeFromResults} />
+            <PullToRefresh onRefresh={refreshResults}>
+              <ResultsTable rows={results} onRemove={removeFromResults} />
+            </PullToRefresh>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <button
                 type="button"
@@ -303,10 +315,11 @@ function Header() {
         </a>
         <a
           href="#tool"
-          className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-foreground hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="hidden items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-foreground hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:inline-flex"
         >
           Open the tool <span aria-hidden="true">→</span>
         </a>
+        <ThemeToggle />
         <ProfileMenu />
       </div>
     </header>
@@ -455,7 +468,7 @@ function HowItWorks() {
 
 function Footer() {
   return (
-    <footer className="border-t border-border bg-secondary/30 pb-safe">
+    <footer className="hidden border-t border-border bg-secondary/30 pb-safe md:block">
       <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-muted-foreground">
         <p>Invoice Extractor — customer contacts from invoices, extracted with vision AI.</p>
         <p className="mt-1 text-xs">Invoices are uploaded only to read them, and extracted results stay in this browser until you clear them. Nothing is shared with third parties.</p>
