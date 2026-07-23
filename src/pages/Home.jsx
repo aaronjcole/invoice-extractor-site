@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
   ScanText, FileDown, Sheet, RotateCcw, Camera, Sparkles, ShieldCheck, ShieldAlert,
@@ -8,6 +9,7 @@ import UploadZone from "@/components/invoice-extractor/UploadZone";
 import Queue from "@/components/invoice-extractor/Queue";
 import ResultsTable from "@/components/invoice-extractor/ResultsTable";
 import CameraCapture from "@/components/invoice-extractor/CameraCapture";
+import ProfileMenu from "@/components/invoice-extractor/ProfileMenu";
 import { enhanceImage } from "@/lib/imageEnhance";
 import { extractFromFile } from "@/lib/extraction";
 import { verifyAddress, resetVerifier } from "@/lib/addressVerify";
@@ -24,7 +26,23 @@ export default function Home() {
   const [results, setResults] = useState([]);
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
-  const [cameraOpen, setCameraOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const cameraOpen = searchParams.get("camera") === "1";
+  const openCamera = () =>
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("camera", "1");
+      return next;
+    });
+  const closeCamera = () =>
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("camera");
+        return next;
+      },
+      { replace: true }
+    );
   const [toast, setToast] = useState(null);
 
   // Living spreadsheet — persists until download/clear.
@@ -143,7 +161,7 @@ export default function Home() {
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <button
               type="button"
-              onClick={() => setCameraOpen((v) => !v)}
+              onClick={() => (cameraOpen ? closeCamera() : openCamera())}
               disabled={running}
               className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground hover:bg-secondary disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
@@ -158,7 +176,7 @@ export default function Home() {
             <div className="mt-3 max-w-md animate-fade-in-up">
               <CameraCapture
                 onCapture={(file) => { addFiles([file]); }}
-                onClose={() => setCameraOpen(false)}
+                onClose={closeCamera}
               />
             </div>
           )}
@@ -261,7 +279,7 @@ export default function Home() {
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-fade-in-up"
+          className="fixed bottom-safe left-1/2 z-50 -translate-x-1/2 animate-fade-in-up"
         >
           <div className="flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-lg">
             <CheckCircle2 className="h-4 w-4 text-verified" aria-hidden="true" />
@@ -275,7 +293,7 @@ export default function Home() {
 
 function Header() {
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-border bg-background/85 pt-safe backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <a href="#top" className="flex items-center gap-2.5">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
@@ -289,6 +307,7 @@ function Header() {
         >
           Open the tool <span aria-hidden="true">→</span>
         </a>
+        <ProfileMenu />
       </div>
     </header>
   );
@@ -436,7 +455,7 @@ function HowItWorks() {
 
 function Footer() {
   return (
-    <footer className="border-t border-border bg-secondary/30">
+    <footer className="border-t border-border bg-secondary/30 pb-safe">
       <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-muted-foreground">
         <p>Invoice Extractor — customer contacts from invoices, extracted with vision AI.</p>
         <p className="mt-1 text-xs">Invoices are uploaded only to read them, and extracted results stay in this browser until you clear them. Nothing is shared with third parties.</p>
