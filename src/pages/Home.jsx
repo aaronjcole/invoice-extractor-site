@@ -14,7 +14,6 @@ import ThemeToggle from "@/components/ThemeToggle";
 import PullToRefresh from "@/components/invoice-extractor/PullToRefresh";
 import { enhanceImage } from "@/lib/imageEnhance";
 import { extractFromFile } from "@/lib/extraction";
-import { verifyAddress, resetVerifier } from "@/lib/addressVerify";
 import { needsReview } from "@/lib/exporters";
 import { downloadCsv, downloadXlsx } from "@/lib/exporters";
 
@@ -46,6 +45,7 @@ export default function Home() {
       { replace: true }
     );
   const [toast, setToast] = useState(null);
+  const [remainingFree, setRemainingFree] = useState(null);
 
   // Living spreadsheet — persists until download/clear.
   useEffect(() => {
@@ -104,9 +104,9 @@ export default function Home() {
     const pending = queue.filter((i) => i.status === "pending");
     if (!pending.length) return;
     setRunning(true);
-    resetVerifier();
     setProgress({ done: 0, total: pending.length });
     let done = 0;
+    let halted = null;
 
     for (const item of pending) {
       updateQueueItem(item.id, { status: "running" });
@@ -126,21 +126,40 @@ export default function Home() {
         const { file_url } = await base44.integrations.Core.UploadFile({ file: processed });
         if (!file_url) throw new Error("Upload failed.");
 
-        // 3. Vision LLM extraction (server-side, universal key).
-        const extracted = await extractFromFile(file_url, { filename: item.file.name });
-
-        // 4. Optional address verification.
-        const addressCheck = await verifyAddress(extracted);
+        // 3. Server-side extraction: enforces sign-in + free limit + cost cap,
+        //    and returns the extracted row + server-verified address status.
+        const { result, address_status, remaining_free } = await extractFromFile(file_url, {
+          filename: item.file.name,
+        });
+        if (typeof remaining_free === "number") setRemainingFree(remaining_free);
 
         const row = {
           id: item.id,
           filename: item.file.name,
-          ...extracted,
-          addressCheck,
+          ...result,
+          addressCheck: address_status,
         };
         setResults((r) => [row, ...r]);
         updateQueueItem(item.id, { status: "done", enhanced });
       } catch (e) {
+        const type = e?.type;
+        if (type === "auth_required") {
+          updateQueueItem(item.id, { status: "error", error: "Sign in required" });
+          halted = "auth";
+          break;
+        }
+        if (type === "payment_required") {
+          updateQueueItem(item.id, { status: "error", error: "Free scans used up" });
+          showToast("You've used your 3 free scans — upgrade to continue", "warn");
+          halted = "paywall";
+          break;
+        }
+        if (type === "capacity") {
+          updateQueueItem(item.id, { status: "error", error: "Service busy" });
+          showToast("Service is at capacity — please try again shortly.", "warn");
+          halted = "capacity";
+          break;
+        }
         updateQueueItem(item.id, { status: "error", error: e.message || "Extraction failed" });
       }
       done += 1;
@@ -148,7 +167,12 @@ export default function Home() {
     }
 
     setRunning(false);
-    showToast("Extraction complete", "success");
+    if (halted === "auth") {
+      const next = window.location.pathname + window.location.search + window.location.hash;
+      base44.auth.redirectToLogin(next);
+      return;
+    }
+    if (!halted) showToast("Extraction complete", "success");
   };
 
   const startOver = () => {
@@ -212,6 +236,11 @@ export default function Home() {
                 {running ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <ScanText className="h-4 w-4" aria-hidden="true" />}
                 {running ? "Extracting…" : `Extract ${pendingCount || ""}`.trim()}
               </button>
+              {typeof remainingFree === "number" && !running && (
+                <span className="text-xs text-muted-foreground">
+                  {remainingFree} free scan{remainingFree === 1 ? "" : "s"} left
+                </span>
+              )}
               {running && (
                 <div className="flex-1" aria-live="polite">
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
