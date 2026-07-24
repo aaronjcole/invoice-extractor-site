@@ -421,9 +421,9 @@ function InvoiceMockup() {
         </div>
         <div className="mt-5 rounded-xl border-2 border-dashed border-accent/40 bg-accent/5 p-4">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-accent-ink">Bill To</p>
-          <p className="mt-1.5 font-display text-lg font-semibold text-foreground">Maria Gonzalez</p>
-          <p className="mt-0.5 text-sm text-muted-foreground">857 Cedar Lane · Loomis, CA</p>
-          <p className="mt-0.5 font-mono text-sm text-foreground">(-) 257-9994</p>
+          <p className="mt-1.5 font-display text-lg font-semibold text-foreground">Joe Smith</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">1234 Country Lane · Tampa, FL</p>
+          <p className="mt-0.5 font-mono text-sm text-foreground">(555) 257-9994</p>
         </div>
         <div className="mt-4 flex gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-verified/15 px-3 py-1 text-xs font-semibold text-verified">
