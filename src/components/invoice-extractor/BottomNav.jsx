@@ -1,8 +1,9 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Home as HomeIcon, ScanText, Settings as SettingsIcon } from "lucide-react";
 
 export default function BottomNav() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const tabs = [
     { to: "/", label: "Home", icon: HomeIcon, active: pathname === "/" },
@@ -18,6 +19,12 @@ export default function BottomNav() {
             key={t.label}
             to={t.to}
             aria-current={t.active ? "page" : undefined}
+            onClick={() => {
+              if (t.active) {
+                navigate(t.to);
+                window.scrollTo(0, 0);
+              }
+            }}
             className="flex min-h-[44px] flex-1 select-none flex-col items-center justify-center gap-0.5 py-2 text-[11px] font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <t.icon className={`h-5 w-5 ${t.active ? "text-accent-ink" : "text-muted-foreground"}`} aria-hidden="true" />
