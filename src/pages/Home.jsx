@@ -188,7 +188,7 @@ export default function Home({ onAuthRequired }) {
 
   return (
     <div className="min-h-screen paper-grain">
-      <Header />
+      <Header onAuthRequired={onAuthRequired} />
       <Hero />
       <FeatureRow />
       <HowItWorks />
@@ -338,7 +338,7 @@ export default function Home({ onAuthRequired }) {
   );
 }
 
-function Header() {
+function Header({ onAuthRequired }) {
   const { isAuthenticated } = useAuth();
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/85 pt-safe backdrop-blur">
@@ -361,7 +361,7 @@ function Header() {
         ) : (
           <button
             type="button"
-            onClick={() => base44.auth.redirectToLogin()}
+            onClick={onAuthRequired}
             className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground shadow-sm hover:bg-accent/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Sign in

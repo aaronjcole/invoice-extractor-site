@@ -38,10 +38,7 @@ const AuthenticatedApp = () => {
       <>
         <Home onAuthRequired={() => setSignInOpen(true)} />
         {signInOpen && (
-          <SignInModal
-            onSignIn={() => navigateToLogin()}
-            onClose={() => setSignInOpen(false)}
-          />
+          <SignInModal onClose={() => setSignInOpen(false)} />
         )}
       </>
     );
