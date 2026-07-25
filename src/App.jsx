@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -11,10 +11,14 @@ import Home from '@/pages/Home';
 import Settings from '@/pages/Settings';
 import BottomNav from '@/components/invoice-extractor/BottomNav';
 import SignInModal from '@/components/SignInModal';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
 // Add page imports here
 
 const AuthenticatedApp = () => {
-  const { user, isAuthenticated, isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
   const [signInOpen, setSignInOpen] = useState(false);
 
   // Show loading spinner while checking app public settings or auth
@@ -31,29 +35,28 @@ const AuthenticatedApp = () => {
     return <UserNotRegisteredError />;
   }
 
-  // Not signed in: show the landing/hero page; prompt sign-in only when the
-  // user tries to extract (drops an invoice and clicks "Extract").
-  if (!isAuthenticated || !user) {
-    return (
-      <>
-        <Home onAuthRequired={() => setSignInOpen(true)} />
-        {signInOpen && (
-          <SignInModal onClose={() => setSignInOpen(false)} />
-        )}
-      </>
-    );
-  }
+  const onAuthRequired = () => setSignInOpen(true);
 
-  // Render the main app
   return (
     <>
       <Routes>
-        {/* Add your page Route elements here */}
-        <Route path="/" element={<Home />} />
-        <Route path="/settings" element={<Settings />} />
+        {/* Public auth routes — reachable while signed out */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        {/* App content */}
+        <Route path="/" element={<Home onAuthRequired={onAuthRequired} />} />
+        <Route
+          path="/settings"
+          element={isAuthenticated ? <Settings /> : <Navigate to="/" replace />}
+        />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      <BottomNav />
+      {!isAuthenticated && signInOpen && (
+        <SignInModal onClose={() => setSignInOpen(false)} />
+      )}
+      {isAuthenticated && <BottomNav />}
     </>
   );
 };

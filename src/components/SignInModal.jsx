@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ScanText, Mail, Lock, Loader2, X } from "lucide-react";
 import GoogleIcon from "@/components/GoogleIcon";
 
 export default function SignInModal({ onClose }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -106,6 +108,26 @@ export default function SignInModal({ onClose }) {
             {loading ? (<><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Signing in…</>) : "Sign in"}
           </button>
         </form>
+
+        <div className="mt-5 flex flex-col items-center gap-1.5 text-sm">
+          <button
+            type="button"
+            onClick={() => { onClose?.(); navigate("/forgot-password"); }}
+            className="text-muted-foreground hover:text-foreground hover:underline"
+          >
+            Forgot password?
+          </button>
+          <p className="text-muted-foreground">
+            Don't have an account?{" "}
+            <button
+              type="button"
+              onClick={() => { onClose?.(); navigate("/register"); }}
+              className="font-medium text-accent-ink hover:underline"
+            >
+              Create one
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );
