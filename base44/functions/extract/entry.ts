@@ -188,7 +188,13 @@ async function verifyAddress(extracted) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    let user;
+    try {
+      user = await base44.auth.me();
+    } catch (e) {
+      console.error("auth.me() failed:", e);
+      return Response.json({ error: "auth_required" }, { status: 401 });
+    }
     if (!user) return Response.json({ error: "auth_required" }, { status: 401 });
 
     let body;
@@ -209,7 +215,7 @@ Deno.serve(async (req) => {
     const todayScans = await base44.asServiceRole.entities.ScanLog.filter(
       { created_date: { $gte: todayIso } },
       "-created_date",
-      1000
+      cap + 1
     );
     if (todayScans.length >= cap) {
       return Response.json({ error: "capacity" }, { status: 503 });
@@ -243,6 +249,11 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Meter this attempt IMMEDIATELY (after quota checks pass, before InvokeLLM)
+    // so every attempt — success or failure — consumes one quota unit and the
+    // race window shrinks to just the check + create step.
+    await base44.entities.ScanLog.create({ file_name });
+
     // EXTRACT via vision LLM (defensive parse + validate).
     let result;
     try {
@@ -254,18 +265,17 @@ Deno.serve(async (req) => {
       });
       result = validateExtraction(parseExtractionResult(res));
     } catch (e) {
-      return Response.json({ error: e.message || "Extraction failed" }, { status: 502 });
+      console.error("InvokeLLM failed:", e);
+      return Response.json({ error: "extraction_failed" }, { status: 502 });
     }
 
     // GEOCODE server-side.
     const address_status = await verifyAddress(result);
 
-    // Record this scan (user-scoped create; RLS stamps the owner).
-    await base44.entities.ScanLog.create({ file_name });
-
     const remaining_free = entitled ? null : Math.max(0, FREE_LIMIT - (usedCount + 1));
     return Response.json({ result, address_status, remaining_free });
   } catch (error) {
-    return Response.json({ error: error.message || "Server error" }, { status: 500 });
+    console.error("extract handler error:", error);
+    return Response.json({ error: "server_error" }, { status: 500 });
   }
 });

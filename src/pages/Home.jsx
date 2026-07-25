@@ -10,6 +10,7 @@ import Queue from "@/components/invoice-extractor/Queue";
 import ResultsTable from "@/components/invoice-extractor/ResultsTable";
 import CameraCapture from "@/components/invoice-extractor/CameraCapture";
 import ProfileMenu from "@/components/invoice-extractor/ProfileMenu";
+import { useAuth } from "@/lib/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import PullToRefresh from "@/components/invoice-extractor/PullToRefresh";
 import { enhanceImage } from "@/lib/imageEnhance";
@@ -333,6 +334,7 @@ export default function Home() {
 }
 
 function Header() {
+  const { isAuthenticated } = useAuth();
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/85 pt-safe backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
@@ -349,7 +351,17 @@ function Header() {
           Open the tool <span aria-hidden="true">→</span>
         </a>
         <ThemeToggle />
-        <ProfileMenu />
+        {isAuthenticated ? (
+          <ProfileMenu />
+        ) : (
+          <button
+            type="button"
+            onClick={() => base44.auth.redirectToLogin()}
+            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground shadow-sm hover:bg-accent/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Sign in
+          </button>
+        )}
       </div>
     </header>
   );

@@ -46,7 +46,9 @@ function exportColumns() {
 export function buildCsv(rows) {
   const cols = exportColumns();
   const escape = (v) => {
-    const s = v == null ? "" : String(v);
+    let s = v == null ? "" : String(v);
+    // CSV formula-injection guard: prefix =, +, -, @ so Excel/Sheets treat as text.
+    if (/^[=+\-@]/.test(s)) s = `'${s}`;
     if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
     return s;
   };

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
-import { ChevronDown, Trash2 } from "lucide-react";
+import { ChevronDown, LogOut, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
 import DeleteAccountDialog from "./DeleteAccountDialog";
 
 export default function ProfileMenu() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [confirmOpen, setConfirmOpen] = useState(false);
   if (!user) return null;
 
@@ -40,6 +40,10 @@ export default function ProfileMenu() {
         <DropdownMenuContent align="end" className="w-60">
           <DropdownMenuLabel className="truncate">{user.email}</DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <DropdownMenuItem onSelect={() => logout(true)}>
+            <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+            Sign out
+          </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => setConfirmOpen(true)}
             className="text-destructive focus:text-destructive"
