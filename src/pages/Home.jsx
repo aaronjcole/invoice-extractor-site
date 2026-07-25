@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import {
@@ -17,6 +17,7 @@ import { enhanceImage } from "@/lib/imageEnhance";
 import { extractFromFile } from "@/lib/extraction";
 import { needsReview } from "@/lib/exporters";
 import { downloadCsv, downloadXlsx } from "@/lib/exporters";
+import { saveQueue, loadQueue } from "@/lib/queueStorage";
 
 const STORAGE_KEY = "invoice-extractor:results";
 
@@ -56,6 +57,34 @@ export default function Home({ onAuthRequired }) {
       if (saved) setResults(JSON.parse(saved));
     } catch {}
   }, []);
+
+  // Restore any queued uploads that were saved before a sign-in / sign-up
+  // round-trip, so users never lose files they already dropped.
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const saved = await loadQueue();
+      if (active && saved.length) {
+        setQueue(
+          saved.map((it) => ({
+            id: it.id,
+            file: it.file,
+            status: "pending",
+            enhanced: !!it.enhanced,
+            error: null,
+          }))
+        );
+      }
+      hydratedRef.current = true;
+    })();
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    saveQueue(queue);
+  }, [queue]);
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
@@ -237,6 +266,7 @@ export default function Home({ onAuthRequired }) {
                 type="button"
                 onClick={runExtraction}
                 disabled={running || pendingCount === 0}
+                title={isAuthenticated ? undefined : "Sign in required — your uploads are saved and waiting"}
                 className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {running ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <ScanText className="h-4 w-4" aria-hidden="true" />}
@@ -262,6 +292,11 @@ export default function Home({ onAuthRequired }) {
                 </div>
               )}
             </div>
+            {!isAuthenticated && pendingCount > 0 && !running && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                You'll sign in to extract — your uploads are saved and will be waiting when you come back.
+              </p>
+            )}
           </section>
         )}
 
