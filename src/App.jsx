@@ -1,13 +1,13 @@
-import { useState } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import Home from '@/pages/Home';
+import Extractor from '@/pages/Extractor';
 import Settings from '@/pages/Settings';
 import BottomNav from '@/components/invoice-extractor/BottomNav';
 import SignInModal from '@/components/SignInModal';
@@ -19,7 +19,6 @@ import ResetPassword from '@/pages/ResetPassword';
 
 const AuthenticatedApp = () => {
   const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
-  const [signInOpen, setSignInOpen] = useState(false);
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -35,31 +34,38 @@ const AuthenticatedApp = () => {
     return <UserNotRegisteredError />;
   }
 
-  const onAuthRequired = () => setSignInOpen(true);
-
   return (
     <>
       <Routes>
-        {/* Public auth routes — reachable while signed out */}
+        {/* Public — no sign-in required */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        {/* App content */}
-        <Route path="/" element={<Home onAuthRequired={onAuthRequired} />} />
-        <Route
-          path="/settings"
-          element={isAuthenticated ? <Settings /> : <Navigate to="/" replace />}
-        />
+        {/* Gated — sign-in required */}
+        <Route path="/app" element={<RequireAuth><Extractor /></RequireAuth>} />
+        <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      {!isAuthenticated && signInOpen && (
-        <SignInModal onClose={() => setSignInOpen(false)} />
-      )}
       {isAuthenticated && <BottomNav />}
     </>
   );
 };
+
+// Gate for app content: shows the sign-in screen when signed out, otherwise
+// renders the protected page. After sign-in the user lands back on this route.
+function RequireAuth({ children }) {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+  if (isAuthenticated) return <>{children}</>;
+  return (
+    <SignInModal
+      redirectTo={location.pathname + location.search}
+      onClose={() => { window.location.href = '/'; }}
+    />
+  );
+}
 
 
 function App() {

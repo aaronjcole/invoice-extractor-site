@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { ScanText, Mail, Lock, Loader2, X } from "lucide-react";
 import GoogleIcon from "@/components/GoogleIcon";
+import { useModalTrap } from "@/hooks/useModalTrap";
 
-export default function SignInModal({ onClose }) {
+export default function SignInModal({ onClose, redirectTo = "/" }) {
   const navigate = useNavigate();
+  const panelRef = useModalTrap(true, onClose);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,14 +19,14 @@ export default function SignInModal({ onClose }) {
     setLoading(true);
     try {
       await base44.auth.loginViaEmailPassword(email, password);
-      window.location.href = "/";
+      window.location.href = redirectTo;
     } catch (err) {
       setError(err.message || "Invalid email or password");
       setLoading(false);
     }
   };
 
-  const handleGoogle = () => base44.auth.loginWithProvider("google", "/");
+  const handleGoogle = () => base44.auth.loginWithProvider("google", redirectTo);
 
   return (
     <div
@@ -35,6 +37,7 @@ export default function SignInModal({ onClose }) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 px-4 backdrop-blur-sm animate-fade-in"
     >
       <div
+        ref={panelRef}
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-8 shadow-xl"
       >

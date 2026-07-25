@@ -2,12 +2,11 @@ import { Link, useLocation } from "react-router-dom";
 import { Home as HomeIcon, ScanText, Settings as SettingsIcon } from "lucide-react";
 
 export default function BottomNav() {
-  const { pathname, hash } = useLocation();
-  const onHome = pathname === "/";
+  const { pathname } = useLocation();
 
   const tabs = [
-    { to: "/", label: "Home", icon: HomeIcon, active: onHome && hash !== "#tool" },
-    { to: "/#tool", label: "Tool", icon: ScanText, active: onHome && hash === "#tool" },
+    { to: "/", label: "Home", icon: HomeIcon, active: pathname === "/" },
+    { to: "/app", label: "Tool", icon: ScanText, active: pathname === "/app" },
     { to: "/settings", label: "Settings", icon: SettingsIcon, active: pathname === "/settings" },
   ];
 
