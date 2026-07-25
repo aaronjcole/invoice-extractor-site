@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Trash2, User, Moon } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -8,19 +8,28 @@ import DeleteAccountDialog from "@/components/invoice-extractor/DeleteAccountDia
 
 export default function Settings() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [delOpen, setDelOpen] = useState(false);
+
+  // Return users to where they came from (e.g. /app); fall back to the
+  // workspace if there's no history to go back to.
+  const goBack = () => {
+    if (window.history.length > 1) navigate(-1);
+    else navigate(user ? "/app" : "/");
+  };
 
   return (
     <div className="min-h-screen paper-grain">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 pt-safe backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center gap-2 px-4 py-3">
-          <Link
-            to="/"
+          <button
+            type="button"
+            onClick={goBack}
             aria-label="Back"
             className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-foreground hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-          </Link>
+          </button>
           <h1 className="font-display text-xl font-semibold">Settings</h1>
           <div className="ml-auto">
             <ProfileMenu />
