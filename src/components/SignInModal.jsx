@@ -1,14 +1,28 @@
-import { ScanText } from "lucide-react";
+import { ScanText, X } from "lucide-react";
 
-export default function SignInModal({ onSignIn }) {
+export default function SignInModal({ onSignIn, onClose }) {
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="signin-title"
+      onClick={onClose}
       className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 px-4 backdrop-blur-sm animate-fade-in"
     >
-      <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center shadow-xl">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-8 text-center shadow-xl"
+      >
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute right-3 top-3 rounded-md p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <X className="h-4 w-4" aria-hidden="true" />
+          </button>
+        )}
         <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
           <ScanText className="h-6 w-6" aria-hidden="true" />
         </span>

@@ -23,7 +23,8 @@ const STORAGE_KEY = "invoice-extractor:results";
 let uid = 0;
 const nextId = () => `f${Date.now()}_${uid++}`;
 
-export default function Home() {
+export default function Home({ onAuthRequired }) {
+  const { isAuthenticated } = useAuth();
   const [queue, setQueue] = useState([]);
   const [results, setResults] = useState([]);
   const [running, setRunning] = useState(false);
@@ -102,6 +103,10 @@ export default function Home() {
     setQueue((q) => q.map((i) => (i.id === id ? { ...i, ...patch } : i)));
 
   const runExtraction = async () => {
+    if (!isAuthenticated) {
+      onAuthRequired?.();
+      return;
+    }
     const pending = queue.filter((i) => i.status === "pending");
     if (!pending.length) return;
     setRunning(true);
