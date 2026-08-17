@@ -10,13 +10,14 @@ import ScrollToTop from './components/ScrollToTop';
 import Home from '@/pages/Home';
 import Extractor from '@/pages/Extractor';
 import Settings from '@/pages/Settings';
+import Pricing from '@/pages/Pricing';
+import PaymentSuccess from '@/pages/PaymentSuccess';
 import BottomNav from '@/components/invoice-extractor/BottomNav';
 import SignInModal from '@/components/SignInModal';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
-// Add page imports here
 
 const AuthenticatedApp = () => {
   const { isAuthenticated, isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
@@ -49,6 +50,8 @@ const AuthenticatedApp = () => {
           <Routes location={location}>
             {/* Public — no sign-in required */}
             <Route path="/" element={<Home />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
