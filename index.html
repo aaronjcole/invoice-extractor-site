@@ -5,11 +5,147 @@
     <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="manifest" href="/manifest.json" />
-    <meta name="description" content="Pull customer contact details out of invoice images and PDFs — typed or handwritten — with a vision LLM. Flag uncertain rows, verify addresses, export to CSV & Excel." />
+
+    <!-- Primary meta -->
+    <title>Invoice Extractor — Pull customer contacts from invoices with AI</title>
+    <meta name="description" content="Upload or photograph invoices — typed or handwritten — and extract customer names, phones, emails, and addresses. Flags uncertain fields, verifies addresses, exports to CSV or Excel. 3 free scans, no card required." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://invoice-extractor.base44.app/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://invoice-extractor.base44.app/" />
+    <meta property="og:title" content="Invoice Extractor — Pull customer contacts from invoices with AI" />
+    <meta property="og:description" content="Upload or photograph invoices — typed or handwritten — and extract customer names, phones, emails, and addresses. Export to CSV or Excel. 3 free scans." />
+    <meta property="og:site_name" content="Invoice Extractor" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Invoice Extractor — AI-powered invoice contact extraction" />
+    <meta name="twitter:description" content="Turn a stack of invoices into a clean contact spreadsheet. Handles typed and handwritten invoices, flags uncertain fields, exports CSV and Excel." />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <title>Invoice Extractor — Pull contacts from invoices</title>
+
+    <!-- Structured data: WebApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Invoice Extractor",
+      "url": "https://invoice-extractor.base44.app/",
+      "description": "AI-powered tool that extracts customer contact details — name, phone, email, and address — from invoice images and PDFs, typed or handwritten. Flags uncertain fields, verifies US addresses, exports to CSV and Excel.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript. Works in any modern browser.",
+      "featureList": [
+        "Extract customer names, phones, emails, and addresses from invoices",
+        "Handles typed and handwritten invoices",
+        "Reads multi-page PDFs",
+        "Automatic image enhancement for low-quality scans",
+        "US address verification via geocoder",
+        "Flags uncertain or ambiguous fields for human review",
+        "Export to CSV and Excel (.xlsx)",
+        "Mobile camera capture for on-site scanning"
+      ],
+      "offers": [
+        {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "3 free invoice scans — no credit card required"
+        },
+        {
+          "@type": "Offer",
+          "price": "19",
+          "priceCurrency": "USD",
+          "description": "Annual plan — unlimited scans, billed once per year"
+        },
+        {
+          "@type": "Offer",
+          "price": "79",
+          "priceCurrency": "USD",
+          "description": "Lifetime access — unlimited scans, one-time payment"
+        }
+      ]
+    }
+    </script>
+
+    <!-- Structured data: FAQPage (matches Home page FAQ section) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What types of documents can Invoice Extractor process?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Any image or PDF containing an invoice — JPEG, PNG, and multi-page PDF are all supported. It handles typed invoices, handwritten receipts, faxed copies, and low-resolution scans. Images are enhanced automatically before the AI reads them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What contact information does it extract?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For each invoice it pulls the customer's name, phone number, email address, street address, city, state, and ZIP code. It looks specifically for the Bill To or Customer block, not the vendor's own details."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it read handwritten invoices?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The vision AI handles handwriting, though confidence will naturally be lower on hard-to-read handwriting. Uncertain fields are flagged for human review rather than silently guessed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does address verification work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "After extraction, US addresses are cross-checked against the US Census geocoder. If the address matches a known location and the extraction confidence is high, it is marked Verified. If the geocoder cannot confirm it, the row is flagged for review."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my invoice data kept private?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Files are uploaded only to read them. Extracted results are stored only in your browser's local storage — they are not sent to any third-party service. Nothing about your invoices is shared beyond the extraction step."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What export formats are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "CSV (UTF-8 with BOM, compatible with Excel and Google Sheets) and real .xlsx files. Both formats carry the review flags so you can filter uncertain rows in your spreadsheet."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work on mobile?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The app works in any modern mobile browser, and there is a built-in camera capture mode so you can photograph invoices on-site and extract contacts immediately."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does Invoice Extractor cost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The first 3 invoice scans are free with no credit card required. After that, you can start an annual plan for $19 per year, or get lifetime access for a one-time payment of $79. Both paid plans include unlimited scans."
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <script>

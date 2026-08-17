@@ -1,34 +1,59 @@
 import { useState } from "react";
-import { X, Sparkles, Clock, Infinity as InfinityIcon, Check } from "lucide-react";
+import { X, Sparkles, Infinity as InfinityIcon, CalendarDays, Check } from "lucide-react";
 import { useModalTrap } from "@/hooks/useModalTrap";
+import { base44 } from "@/api/base44Client";
 
 const TIERS = [
   {
-    id: "pass",
-    icon: Clock,
-    name: "24-Hour Pass",
-    price: "$9",
-    features: ["Unlimited scans for 24 hours", "No saved run history"],
-    cta: "Get 24-hour pass",
+    id: "annual",
+    icon: CalendarDays,
+    name: "Annual Plan",
+    price: "$19",
+    priceNote: "per year",
+    features: [
+      "Unlimited scans for 12 months",
+      "All features included",
+      "Renews automatically each year",
+    ],
+    cta: "Start annual plan",
   },
   {
     id: "lifetime",
     icon: InfinityIcon,
-    name: "Lifetime Account",
+    name: "Lifetime Access",
     price: "$79",
+    priceNote: "one-time",
     best: true,
-    features: ["Unlimited scans forever", "Saved run history across sessions"],
+    features: [
+      "Unlimited scans — forever",
+      "All current & future features",
+      "Pay once, never again",
+    ],
     cta: "Get lifetime access",
   },
 ];
 
 export default function PaywallModal({ onClose, headline = "Upgrade to keep going" }) {
-  const [notice, setNotice] = useState("");
+  const [loading, setLoading] = useState(null); // tier id being loaded
+  const [error, setError] = useState("");
   const panelRef = useModalTrap(true, onClose);
 
-  // Payments are not wired up yet — surface a clear placeholder instead of
-  // attempting any real checkout call.
-  const handleChoose = () => setNotice("Checkout is coming very soon!");
+  const handleChoose = async (tierId) => {
+    setError("");
+    setLoading(tierId);
+    try {
+      const { url } = await base44.functions.invoke("checkout", { tier: tierId });
+      if (url) {
+        window.location.href = url;
+      } else {
+        setError("Couldn't start checkout. Please try again.");
+      }
+    } catch {
+      setError("Checkout unavailable right now. Please try again shortly.");
+    } finally {
+      setLoading(null);
+    }
+  };
 
   return (
     <div
@@ -81,7 +106,8 @@ export default function PaywallModal({ onClose, headline = "Upgrade to keep goin
               )}
               <t.icon className="h-6 w-6 text-accent-ink" aria-hidden="true" />
               <h2 className="mt-3 font-display text-lg font-semibold text-foreground">{t.name}</h2>
-              <p className="mt-1 font-display text-3xl font-semibold text-foreground">{t.price}</p>
+              <p className="mt-0.5 font-display text-3xl font-semibold text-foreground">{t.price}</p>
+              <p className="text-xs text-muted-foreground">{t.priceNote}</p>
               <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
                 {t.features.map((f) => (
                   <li key={f} className="flex items-start gap-2">
@@ -92,24 +118,29 @@ export default function PaywallModal({ onClose, headline = "Upgrade to keep goin
               </ul>
               <button
                 type="button"
-                onClick={handleChoose}
-                className="mt-4 w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground hover:bg-accent/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={() => handleChoose(t.id)}
+                disabled={loading !== null}
+                className="mt-4 w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground hover:bg-accent/90 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                {t.cta}
+                {loading === t.id ? "Opening checkout…" : t.cta}
               </button>
             </div>
           ))}
         </div>
 
-        {notice && (
-          <p className="mt-4 text-center text-sm font-medium text-accent-ink">{notice}</p>
+        {error && (
+          <p className="mt-4 text-center text-sm font-medium text-destructive">{error}</p>
         )}
+
+        <p className="mt-4 text-center text-xs text-muted-foreground">
+          Payments handled securely by Stripe. Cancel anytime.
+        </p>
 
         {onClose && (
           <button
             type="button"
             onClick={onClose}
-            className="mt-4 w-full text-center text-xs text-muted-foreground hover:text-foreground hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="mt-2 w-full text-center text-xs text-muted-foreground hover:text-foreground hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Maybe later
           </button>

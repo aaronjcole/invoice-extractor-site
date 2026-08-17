@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import {
-  ScanText, Sheet, Sparkles, ShieldCheck, ShieldAlert, MapPin,
+  ScanText, Sheet, Sparkles, ShieldCheck, ShieldAlert, MapPin, Infinity as InfinityIcon, CalendarDays,
 } from "lucide-react";
 import ProfileMenu from "@/components/invoice-extractor/ProfileMenu";
 import { useAuth } from "@/lib/AuthContext";
@@ -13,6 +13,9 @@ export default function Home() {
       <Hero />
       <FeatureRow />
       <HowItWorks />
+      <WhoUsesIt />
+      <PricingTeaser />
+      <FaqSection />
       <Footer />
     </div>
   );
@@ -29,23 +32,33 @@ function Header() {
           </span>
           <span className="font-display text-xl font-semibold tracking-tight">Invoice Extractor</span>
         </Link>
-        <Link
-          to="/app"
-          className="hidden items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-foreground hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:inline-flex"
-        >
-          Open the tool <span aria-hidden="true">→</span>
-        </Link>
-        <ThemeToggle />
-        {isAuthenticated ? (
-          <ProfileMenu />
-        ) : (
+        <nav className="hidden items-center gap-1 sm:flex">
+          <Link
+            to="/pricing"
+            className="rounded-lg px-3 py-1.5 text-sm font-medium text-foreground hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Pricing
+          </Link>
           <Link
             to="/app"
-            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground shadow-sm hover:bg-accent/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="rounded-lg px-3 py-1.5 text-sm font-medium text-foreground hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            Sign in
+            Open the tool <span aria-hidden="true">→</span>
           </Link>
-        )}
+        </nav>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          {isAuthenticated ? (
+            <ProfileMenu />
+          ) : (
+            <Link
+              to="/app"
+              className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground shadow-sm hover:bg-accent/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Sign in
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   );
@@ -85,7 +98,7 @@ function Hero() {
             >
               Start extracting <span aria-hidden="true">→</span>
             </Link>
-            <span className="text-sm text-muted-foreground">Free to try.</span>
+            <span className="text-sm text-muted-foreground">3 free scans, no card needed.</span>
           </div>
         </div>
 
@@ -160,9 +173,9 @@ function FeatureRow() {
 
 function HowItWorks() {
   const steps = [
-    { n: "01", t: "Add invoices", d: "Drag in files or snap a photo right in the browser." },
-    { n: "02", t: "Extract", d: "AI reads each one and builds a living spreadsheet as it goes." },
-    { n: "03", t: "Review & export", d: "Fix flagged rows, then download CSV or Excel." },
+    { n: "01", t: "Add invoices", d: "Drag in files or snap a photo right in the browser. Supports JPG, PNG, PDF, and multi-page scans." },
+    { n: "02", t: "Extract", d: "AI reads each one and builds a living spreadsheet as it goes. Low-DPI or faded images are enhanced automatically." },
+    { n: "03", t: "Review & export", d: "Fix flagged rows, then download CSV or Excel. Address fields are cross-checked against a geocoder." },
   ];
   return (
     <section id="how" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16">
@@ -182,13 +195,188 @@ function HowItWorks() {
   );
 }
 
+function WhoUsesIt() {
+  const personas = [
+    {
+      label: "HVAC & plumbing contractors",
+      body: "Process a season's worth of service invoices at the end of the month. Pull every customer's contact into a spreadsheet in minutes instead of hours.",
+    },
+    {
+      label: "Accountants & bookkeepers",
+      body: "Extract billing contacts from client invoice bundles without re-keying a single address. Flags let you quickly find the ones worth a second look.",
+    },
+    {
+      label: "Office administrators",
+      body: "Digitize paper or faxed invoices into a clean, sortable contact list. Works on handwritten notes just as well as laser-printed receipts.",
+    },
+    {
+      label: "Field service businesses",
+      body: "Snap a photo of an invoice on-site and have the customer's contact details in a spreadsheet before you get back to the truck.",
+    },
+  ];
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-10">
+      <h2 className="mb-6 font-display text-2xl font-semibold text-foreground sm:text-3xl">Who uses Invoice Extractor?</h2>
+      <div className="grid gap-4 sm:grid-cols-2">
+        {personas.map((p) => (
+          <div key={p.label} className="rounded-2xl border border-border bg-card p-5">
+            <h3 className="font-semibold text-foreground">{p.label}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PricingTeaser() {
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-10">
+      <div className="rounded-3xl border border-border bg-secondary/40 p-8 sm:p-10">
+        <h2 className="font-display text-2xl font-semibold text-foreground sm:text-3xl">Simple pricing — start free</h2>
+        <p className="mt-2 text-muted-foreground">Try the first three invoices at no cost. Upgrade when you're ready.</p>
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-2xl border border-border bg-card p-5">
+            <p className="font-display text-2xl font-semibold text-foreground">Free</p>
+            <p className="text-sm text-muted-foreground">3 scans to get started</p>
+            <p className="mt-3 text-sm text-foreground">No card required. See the AI work on your real invoices first.</p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-5">
+            <CalendarDays className="h-5 w-5 text-accent-ink" aria-hidden="true" />
+            <p className="mt-2 font-display text-2xl font-semibold text-foreground">$19 <span className="text-base font-normal text-muted-foreground">/ year</span></p>
+            <p className="text-sm text-muted-foreground">Annual plan</p>
+            <p className="mt-3 text-sm text-foreground">Unlimited scans. Cancel anytime. Renews automatically.</p>
+          </div>
+          <div className="relative rounded-2xl border border-accent p-5 ring-1 ring-accent bg-card">
+            <span className="absolute -top-2.5 left-4 rounded-full bg-accent px-3 py-0.5 text-[11px] font-semibold text-accent-foreground">Best value</span>
+            <InfinityIcon className="h-5 w-5 text-accent-ink" aria-hidden="true" />
+            <p className="mt-2 font-display text-2xl font-semibold text-foreground">$79 <span className="text-base font-normal text-muted-foreground">one-time</span></p>
+            <p className="text-sm text-muted-foreground">Lifetime access</p>
+            <p className="mt-3 text-sm text-foreground">Unlimited scans forever. Pay once, done.</p>
+          </div>
+        </div>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link
+            to="/app"
+            className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground shadow-sm hover:bg-accent/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Try free now →
+          </Link>
+          <Link
+            to="/pricing"
+            className="inline-flex items-center gap-2 rounded-lg bg-card px-5 py-2.5 text-sm font-semibold text-foreground ring-1 ring-border shadow-sm hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Compare plans
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const FAQS = [
+  {
+    q: "What types of documents can Invoice Extractor process?",
+    a: "Any image or PDF containing an invoice — JPEG, PNG, and multi-page PDF are all supported. It handles typed invoices, handwritten receipts, faxed copies, and low-resolution scans. Images are enhanced automatically before the AI reads them.",
+  },
+  {
+    q: "What contact information does it extract?",
+    a: "For each invoice it pulls the customer's name, phone number, email address, street address, city, state, and ZIP code. It looks specifically for the 'Bill To' or 'Customer' block, not the vendor's own details.",
+  },
+  {
+    q: "Can it read handwritten invoices?",
+    a: "Yes. The vision AI is trained to handle handwriting, though confidence will naturally be lower on hard-to-read handwriting. Uncertain fields are flagged for human review rather than silently guessed.",
+  },
+  {
+    q: "How does address verification work?",
+    a: "After extraction, US addresses are cross-checked against the US Census geocoder. If the address matches a known location and the extraction confidence is high, it's marked 'Verified'. If the geocoder can't confirm it, the row is flagged for review. International addresses are not geocoded but are still extracted.",
+  },
+  {
+    q: "Is my invoice data kept private?",
+    a: "Files are uploaded only to read them. Extracted results are stored only in your browser's local storage — they're not sent to any third-party service. Nothing about your invoices is shared beyond the extraction step.",
+  },
+  {
+    q: "What export formats are supported?",
+    a: "CSV (UTF-8 with BOM, compatible with Excel and Google Sheets) and real .xlsx files. Both formats carry the review flags so you can filter uncertain rows in your spreadsheet.",
+  },
+  {
+    q: "What happens when a field is uncertain?",
+    a: "Uncertain fields are highlighted in the results table and marked for review. You can fix them inline before exporting. Confidence level (high / medium / low) is set per-extraction, and any field that was ambiguous appears in the 'fields to verify' list.",
+  },
+  {
+    q: "Do I need to create an account?",
+    a: "You need an account to run extractions. The first three scans are free with no credit card required. Sign up with Google or email.",
+  },
+  {
+    q: "Does it work on mobile?",
+    a: "Yes. The app works in any modern mobile browser, and there's a built-in camera capture mode so you can photograph invoices on-site and extract contacts immediately.",
+  },
+  {
+    q: "What's the difference between the Annual and Lifetime plans?",
+    a: "Annual is $19 billed once per year — great if you want a low upfront cost and the ability to cancel. Lifetime is a single one-time payment of $79 that gives you unlimited scans forever. Use the tool for more than four years and Lifetime pays for itself.",
+  },
+];
+
+function FaqSection() {
+  return (
+    <section id="faq" className="mx-auto max-w-3xl px-4 py-12">
+      <h2 className="mb-8 font-display text-2xl font-semibold text-foreground sm:text-3xl">Frequently asked questions</h2>
+      <div className="space-y-6">
+        {FAQS.map((item) => (
+          <div key={item.q}>
+            <h3 className="font-semibold text-foreground">{item.q}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{item.a}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-10 text-center">
+        <Link
+          to="/app"
+          className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground shadow-sm hover:bg-accent/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Start extracting — 3 free scans →
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 function Footer() {
   return (
-    <footer className="hidden border-t border-border bg-secondary/30 pb-safe md:block">
-      <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-muted-foreground">
-        <p>Invoice Extractor — customer contacts from invoices, extracted with vision AI.</p>
-        <p className="mt-1 text-xs">Invoices are uploaded only to read them, and extracted results stay in this browser until you clear them. Nothing is shared with third parties.</p>
-        <p className="mt-1 text-xs">Address checks © OpenStreetMap contributors.</p>
+    <footer className="border-t border-border bg-secondary/30 pb-safe">
+      <div className="mx-auto max-w-6xl px-4 py-10">
+        <div className="grid gap-8 sm:grid-cols-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <ScanText className="h-4 w-4" aria-hidden="true" />
+              </span>
+              <span className="font-display font-semibold text-foreground">Invoice Extractor</span>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">Customer contacts from invoices, extracted with vision AI.</p>
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold text-foreground">Product</h4>
+            <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
+              <li><Link to="/app" className="hover:text-foreground hover:underline">Try the tool</Link></li>
+              <li><Link to="/pricing" className="hover:text-foreground hover:underline">Pricing</Link></li>
+              <li><Link to="/#how" className="hover:text-foreground hover:underline">How it works</Link></li>
+              <li><Link to="/#faq" className="hover:text-foreground hover:underline">FAQ</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold text-foreground">Account</h4>
+            <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
+              <li><Link to="/register" className="hover:text-foreground hover:underline">Create account</Link></li>
+              <li><Link to="/login" className="hover:text-foreground hover:underline">Sign in</Link></li>
+              <li><Link to="/settings" className="hover:text-foreground hover:underline">Settings</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-8 border-t border-border pt-6 text-xs text-muted-foreground">
+          <p>Invoices are uploaded only to read them, and extracted results stay in this browser until you clear them. Nothing is shared with third parties.</p>
+          <p className="mt-1">Address checks © OpenStreetMap contributors. Geocoding via US Census Bureau geocoder.</p>
+        </div>
       </div>
     </footer>
   );

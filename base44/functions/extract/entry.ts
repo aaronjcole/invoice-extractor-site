@@ -230,7 +230,7 @@ Deno.serve(async (req) => {
     const now = Date.now();
     const entitled = entitlements.some((e) => {
       if (e.type === "lifetime") return true;
-      if (e.type === "day_pass" && e.expires_at) {
+      if ((e.type === "day_pass" || e.type === "annual") && e.expires_at) {
         return new Date(e.expires_at).getTime() > now;
       }
       return false;

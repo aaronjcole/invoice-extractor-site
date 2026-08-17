@@ -6,7 +6,8 @@
       "type": "string",
       "enum": [
         "lifetime",
-        "day_pass"
+        "day_pass",
+        "annual"
       ]
     },
     "expires_at": {
