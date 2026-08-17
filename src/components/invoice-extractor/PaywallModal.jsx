@@ -5,31 +5,31 @@ import { base44 } from "@/api/base44Client";
 
 const TIERS = [
   {
+    id: "annual",
+    icon: CalendarDays,
+    name: "Annual Plan",
+    price: "$19",
+    priceNote: "per year",
+    features: [
+      "Unlimited scans for 12 months",
+      "All features included",
+      "Renews automatically each year",
+    ],
+    cta: "Start annual plan",
+  },
+  {
     id: "lifetime",
     icon: InfinityIcon,
     name: "Lifetime Access",
-    price: "$19",
+    price: "$79",
     priceNote: "one-time",
     best: true,
     features: [
       "Unlimited scans — forever",
       "All current & future features",
-      "Saved run history",
+      "Pay once, never again",
     ],
     cta: "Get lifetime access",
-  },
-  {
-    id: "annual",
-    icon: CalendarDays,
-    name: "Annual Plan",
-    price: "$79",
-    priceNote: "per year",
-    features: [
-      "Unlimited scans for 12 months",
-      "All features included",
-      "Easy to expense annually",
-    ],
-    cta: "Start annual plan",
   },
 ];
 

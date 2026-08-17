@@ -5,7 +5,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import ProfileMenu from "@/components/invoice-extractor/ProfileMenu";
 
 const FEATURES = [
-  { label: "Invoice scans", free: "3 (trial)", lifetime: "Unlimited", annual: "Unlimited" },
+  { label: "Invoice scans", free: "3 (trial)", annual: "Unlimited", lifetime: "Unlimited" },
   { label: "Typed & handwritten invoices", free: true, lifetime: true, annual: true },
   { label: "Multi-page PDFs", free: true, lifetime: true, annual: true },
   { label: "Address verification", free: true, lifetime: true, annual: true },
@@ -26,8 +26,8 @@ const FAQS = [
     a: "Yes. You get 3 free scans with no credit card required. Create an account and start extracting immediately.",
   },
   {
-    q: "What's the difference between Lifetime and Annual?",
-    a: "Lifetime is a one-time purchase: pay once, use forever. Annual is billed once per year and is a good fit for businesses that prefer predictable, expense-able subscriptions.",
+    q: "What's the difference between Annual and Lifetime?",
+    a: "Annual is $19/year — billed once per year, cancel anytime. Lifetime is a single payment of $79 that gives you unlimited access forever. If you plan to use the tool for more than four years, Lifetime pays for itself.",
   },
   {
     q: "Can I get a refund?",
@@ -121,27 +121,27 @@ function TiersGrid() {
           ctaVariant="secondary"
         />
         <TierCard
-          name="Lifetime"
+          name="Annual"
           price="$19"
+          priceNote="per year"
+          description="Best for steady, ongoing use — cancel anytime."
+          features={["Unlimited scans for 12 months", "All features included", "Saved run history", "Renews automatically"]}
+          cta="Start annual plan"
+          ctaTo="/app"
+          ctaVariant="secondary"
+          icon={CalendarDays}
+        />
+        <TierCard
+          name="Lifetime"
+          price="$79"
           priceNote="one-time payment"
           description="Pay once. Extract invoices forever."
-          features={["Unlimited scans", "All features, forever", "Saved run history", "Future updates included"]}
+          features={["Unlimited scans forever", "All features, always", "Saved run history", "Future updates included"]}
           cta="Get lifetime access"
           ctaTo="/app"
           ctaVariant="primary"
           best
           icon={InfinityIcon}
-        />
-        <TierCard
-          name="Annual"
-          price="$79"
-          priceNote="per year"
-          description="Best for businesses that prefer annual billing."
-          features={["Unlimited scans for 12 months", "All features included", "Saved run history", "Easy annual expense"]}
-          cta="Start annual plan"
-          ctaTo="/app"
-          ctaVariant="secondary"
-          icon={CalendarDays}
         />
       </div>
     </section>

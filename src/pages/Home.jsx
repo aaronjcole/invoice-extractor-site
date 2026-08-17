@@ -241,18 +241,18 @@ function PricingTeaser() {
             <p className="text-sm text-muted-foreground">3 scans to get started</p>
             <p className="mt-3 text-sm text-foreground">No card required. See the AI work on your real invoices first.</p>
           </div>
+          <div className="rounded-2xl border border-border bg-card p-5">
+            <CalendarDays className="h-5 w-5 text-accent-ink" aria-hidden="true" />
+            <p className="mt-2 font-display text-2xl font-semibold text-foreground">$19 <span className="text-base font-normal text-muted-foreground">/ year</span></p>
+            <p className="text-sm text-muted-foreground">Annual plan</p>
+            <p className="mt-3 text-sm text-foreground">Unlimited scans. Cancel anytime. Renews automatically.</p>
+          </div>
           <div className="relative rounded-2xl border border-accent p-5 ring-1 ring-accent bg-card">
             <span className="absolute -top-2.5 left-4 rounded-full bg-accent px-3 py-0.5 text-[11px] font-semibold text-accent-foreground">Best value</span>
             <InfinityIcon className="h-5 w-5 text-accent-ink" aria-hidden="true" />
-            <p className="mt-2 font-display text-2xl font-semibold text-foreground">$19 <span className="text-base font-normal text-muted-foreground">one-time</span></p>
+            <p className="mt-2 font-display text-2xl font-semibold text-foreground">$79 <span className="text-base font-normal text-muted-foreground">one-time</span></p>
             <p className="text-sm text-muted-foreground">Lifetime access</p>
             <p className="mt-3 text-sm text-foreground">Unlimited scans forever. Pay once, done.</p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-5">
-            <CalendarDays className="h-5 w-5 text-accent-ink" aria-hidden="true" />
-            <p className="mt-2 font-display text-2xl font-semibold text-foreground">$79 <span className="text-base font-normal text-muted-foreground">/ year</span></p>
-            <p className="text-sm text-muted-foreground">Annual plan</p>
-            <p className="mt-3 text-sm text-foreground">Unlimited scans. Easy to expense. Renews annually.</p>
           </div>
         </div>
         <div className="mt-6 flex flex-wrap gap-3">
@@ -312,8 +312,8 @@ const FAQS = [
     a: "Yes. The app works in any modern mobile browser, and there's a built-in camera capture mode so you can photograph invoices on-site and extract contacts immediately.",
   },
   {
-    q: "What's the difference between the Lifetime and Annual plans?",
-    a: "Lifetime is a single one-time payment of $19 that gives you unlimited scans forever. Annual is $79 billed once per year — a good fit for businesses that prefer predictable, expense-able subscriptions over a one-time purchase.",
+    q: "What's the difference between the Annual and Lifetime plans?",
+    a: "Annual is $19 billed once per year — great if you want a low upfront cost and the ability to cancel. Lifetime is a single one-time payment of $79 that gives you unlimited scans forever. Use the tool for more than four years and Lifetime pays for itself.",
   },
 ];
 
